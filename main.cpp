@@ -1,9 +1,11 @@
 #include "Server.h"
+#include "FileReader.h"
 #include <stdlib.h>
-#include <iostream>
+
 using namespace std;
 int main() {
-    Server server(8001);
+    FileReader file;
+    Server server(file.readPort("ServerPort.txt"));
     try {
         server.start();
     } catch (const char *msg) {
