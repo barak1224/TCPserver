@@ -36,6 +36,14 @@ int Server::acceptTwoClients() {
             return ERROR;
         }
         cout << "Client " << playerNumber + 1 << " connected" << endl;
+        if (playerNumber == 0) {
+            int sendPlayerNumber = playerNumber + 1;
+            int n = write(clientSockets[playerNumber], &sendPlayerNumber, sizeof(sendPlayerNumber));
+            if (n == ERROR) {
+                cout << "Error writing to socket" << endl;
+                return ERROR;
+            }
+        }
     }
     return VALID;
 }
@@ -72,14 +80,14 @@ bool Server::playTurn(int clientSocket1, int clientSocket2) {
 }
 
 // Handle requests from a specific client
-bool Server::readFrom(int clientSocket, char arr[MAX_MOVE]) {
-    // Read new exercise arguments
+bool Server::readFrom(int clientSocket, char *arr) {
+    // Read new move from the client
     int n = read(clientSocket, arr, sizeof(char) * MAX_MOVE);
     return checkForErrors(n);
 }
 
 bool Server::writeFrom(int clientSocket, char arr[MAX_MOVE]) {
-    // Read new exercise arguments
+    // Write new move to the client
     int n = write(clientSocket, arr, sizeof(char) * MAX_MOVE);
     return checkForErrors(n);
 }

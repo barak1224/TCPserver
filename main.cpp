@@ -1,8 +1,9 @@
 #include "Server.h"
 #include <stdlib.h>
+#include <iostream>
 using namespace std;
 int main() {
-    Server server(8000);
+    Server server(8001);
     try {
         server.start();
     } catch (const char *msg) {
