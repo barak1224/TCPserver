@@ -14,7 +14,9 @@
 #define VALID 1
 #define DISCONNECT 0
 #define MAX_CONNECTED_CLIENTS 2
-#define MAX_MOVE 9
+#define MAX_MOVE 7
+#define PLAYER_1 0
+#define PLAYER_2 1
 
 class Server {
 public:

@@ -5,7 +5,7 @@
 using namespace std;
 int main() {
     FileReader file;
-    Server server(file.readPort("../ServerPort.txt"));
+    Server server(file.readPort("ServerPort.txt"));
     try {
         server.start();
     } catch (const char *msg) {
