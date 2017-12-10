@@ -1,5 +1,6 @@
 #include "Server.h"
-#include <stdlib.h>
+#include <cstdlib>
+
 using namespace std;
 int main() {
     Server server(8000);
