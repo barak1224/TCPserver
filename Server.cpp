@@ -30,12 +30,22 @@ void Server::initializeServer() {
 int Server::acceptTwoClients() {
     // Accept a new client connection
     for (int playerNumber = 0; playerNumber < 2; playerNumber++) {
-        clientSockets[playerNumber] = accept(serverSocket, (struct sockaddr *) &dataClients[playerNumber].clientAddress,
-                                             &dataClients[playerNumber].clientLen);
+        dataClients[playerNumber].clientLen=0;
+        clientSockets[playerNumber] = accept(serverSocket,
+                                             (struct sockaddr *) &(dataClients[playerNumber].clientAddress),
+                                             &(dataClients[playerNumber].clientLen));
         if (clientSockets[playerNumber] < 0) {
             return ERROR;
         }
         cout << "Client " << playerNumber + 1 << " connected" << endl;
+        if (playerNumber == 0) {
+            int sendPlayerNumber = playerNumber + 1;
+            int n = write(clientSockets[playerNumber], &sendPlayerNumber, sizeof(sendPlayerNumber));
+            if (n == ERROR) {
+                cout << "Error writing to socket" << endl;
+                return ERROR;
+            }
+        }
     }
     return VALID;
 }
@@ -48,39 +58,42 @@ void Server::start() {
         if (sendPlayersNumbers() == ERROR) { throw "Error on accept"; }
         bool play = true;
         while (play) {
-            play = playTurn(clientSockets[0], clientSockets[1]);
+            play = playTurn(clientSockets[PLAYER_1], clientSockets[PLAYER_2]);
             if (play) {
-                play = playTurn(clientSockets[1], clientSockets[0]);
+                play = playTurn(clientSockets[PLAYER_2], clientSockets[PLAYER_1]);
             }
         }
         // Close communication with the client
-        close(clientSockets[0]);
-        close(clientSockets[1]);
+        close(clientSockets[PLAYER_1]);
+        close(clientSockets[PLAYER_2]);
     }
 }
 
 bool Server::playTurn(int clientSocket1, int clientSocket2) {
     char arr[MAX_MOVE];
+    memset(arr, 0, MAX_MOVE);
     bool continuePlay;
     continuePlay = readFrom(clientSocket1, arr);
-    if (strcmp(arr, "END") == 0) {
-        continuePlay = false;
-    } else if (continuePlay) {
+    if (continuePlay) {
         continuePlay = writeFrom(clientSocket2, arr);
+    }
+    if (strcmp(arr,"End") == 0) {
+        continuePlay = false;
     }
     return continuePlay;
 }
 
 // Handle requests from a specific client
-bool Server::readFrom(int clientSocket, char arr[MAX_MOVE]) {
-    // Read new exercise arguments
-    int n = read(clientSocket, arr, sizeof(char) * MAX_MOVE);
+bool Server::readFrom(int clientSocket, char *arr) {
+    // Read new move from the client
+    int n = read(clientSocket, arr, MAX_MOVE);
+    cout << arr << endl;
     return checkForErrors(n);
 }
 
 bool Server::writeFrom(int clientSocket, char arr[MAX_MOVE]) {
-    // Read new exercise arguments
-    int n = write(clientSocket, arr, sizeof(char) * MAX_MOVE);
+    // Write new move to the client
+    int n = write(clientSocket, arr, MAX_MOVE);
     return checkForErrors(n);
 }
 
