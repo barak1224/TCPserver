@@ -4,6 +4,19 @@
 
 #include "StartCommand.h"
 
-void StartCommand::execute(vector<string> args) {
+StartCommand::StartCommand(map<string, int> *openGames) : openGames(openGames) {}
 
+void StartCommand::execute(vector<string> args, ClientData data) {
+    // args[0] is the name of the created game
+    string roomName = args[0];
+    int clientSocket = data.clientSocket;
+    if (openGames->find(roomName) == openGames->end()) {
+        string message = "exists";
+        int n = write(clientSocket, &message, sizeof(message));
+    } else {
+
+        openGames[roomName] = clientSocket;
+        string message = "open";
+        int n = write(clientSocket, &message, sizeof(message));
+    }
 }

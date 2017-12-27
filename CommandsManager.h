@@ -12,12 +12,10 @@
 
 class CommandsManager {
 public:
-
-
     struct GameroomData {
         int socket1;
         int socket2;
-        //TODO maybe something more?
+        string name;
     };
 
     CommandsManager(Server *server);
@@ -26,14 +24,14 @@ public:
 
     void executeCommand(string command, vector<string> args, ClientData data);
 
-
     Server *getServer() { return this->server; }
 
 private:
     Server *server;
     map<string, Command *> commandsMap;
-    map<string, GameroomData> lobbyMap;
-    map<string, int> openGames;
+
+    map<string, GameroomData> *lobbyMap;
+    map<string, int> *openGames;
 };
 
 #endif //TCPSERVER_COMMANDMANAGER_H

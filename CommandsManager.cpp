@@ -9,17 +9,22 @@
 #include "CloseCommand.h"
 #include "StartCommand.h"
 
+pthread_mutex_t mutex;
+
 CommandsManager::CommandsManager(Server *server) {
     this->server = server;
     commandsMap["play"] = new PlayCommand();
-    commandsMap["list_games"] = new PrintCommand(&openGames);
+    commandsMap["list_games"] = new PrintCommand(openGames);
     commandsMap["join"] = new JoinCommand(&openGames, &lobbyMap);
     commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
-    commandsMap["start"] = new StartCommand(&openGames);
+    commandsMap["start"] = new StartCommand(openGames);
 }
 void CommandsManager::executeCommand(string command, vector<string> args, ClientData data) {
     Command *commandObj = commandsMap[command];
-    commandObj->execute(args);
+    // lock it so only one gets access to the commands at a time
+    pthread_mutex_lock(&mutex);
+    commandObj->execute(args, data);
+    pthread_mutex_unlock(&mutex);
 }
 CommandsManager::~CommandsManager() {
     map<string, Command *>::iterator it;

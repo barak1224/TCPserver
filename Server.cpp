@@ -115,6 +115,7 @@ void *handleClient(void *clientData) {
         tok = strtok (NULL, " ,.-");
     }
 
-    manager->executeCommand(command, args);
+    manager->executeCommand(command, args, *data);
+    pthread_exit(data->threadID);
 }
 
