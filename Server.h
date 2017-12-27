@@ -9,30 +9,30 @@
 #include <stdio.h>
 #include <sstream>
 #include <cstring>
+#include <pthread.h>
+#include "CommandsManager.h"
 
 #define ERROR -1
 #define VALID 1
 #define DISCONNECT 0
 #define MAX_CONNECTED_CLIENTS 2
-#define MAX_MOVE 7
-#define PLAYER_1 0
-#define PLAYER_2 1
+#define MAX_MOVE 30
+
 
 class Server {
 public:
     Server(int port);
     void start();
     void stop();
+
+
+    int getPort() { return this->port; }
+
+    int getServerSocket() { return this->serverSocket; }
 private:
-    // Struct which store data client
-    struct DataClient {
-        struct sockaddr_in clientAddress;
-        socklen_t clientLen;
-    };
-    int clientSockets[2];
-    DataClient dataClients[2];
     int port;
     int serverSocket; // the socket's file descriptor
+    CommandsManager *commandsManager;
     /**
      * The method read from the client socket and store inside arr
      * @return true for success, otherwise false
@@ -67,6 +67,12 @@ private:
      * @return status of sending
      */
     int sendPlayersNumbers();
+
+    /**
+     * Function that deals with closing all the remaining threads before closing the server.
+     */
+    void closeAllThreads();
+
 };
 
 

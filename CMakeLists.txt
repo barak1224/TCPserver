@@ -7,5 +7,18 @@ set(SOURCE_FILES main.cpp
                 Server.cpp
                 Server.h
                 FileReader.cpp
-                FileReader.h)
+                FileReader.h
+                CommandsManager.cpp
+                CommandsManager.h
+                Command.h
+                PlayCommand.h
+                PlayCommand.cpp
+                JoinCommand.cpp
+                JoinCommand.h
+                PrintCommand.cpp
+                PrintCommand.h
+                CloseCommand.cpp
+                CloseCommand.h
+                StartCommand.cpp
+                StartCommand.h)
 add_executable(TCPserver ${SOURCE_FILES})
