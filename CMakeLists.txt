@@ -20,5 +20,7 @@ set(SOURCE_FILES main.cpp
                 CloseCommand.cpp
                 CloseCommand.h
                 StartCommand.cpp
-                StartCommand.h)
+                StartCommand.h
+                ClientData.h
+        )
 add_executable(TCPserver ${SOURCE_FILES})

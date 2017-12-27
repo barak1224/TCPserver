@@ -17,7 +17,7 @@ CommandsManager::CommandsManager(Server *server) {
     commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
     commandsMap["start"] = new StartCommand(&openGames);
 }
-void CommandsManager::executeCommand(string command, vector<string> args, int socket) {
+void CommandsManager::executeCommand(string command, vector<string> args, ClientData data) {
     Command *commandObj = commandsMap[command];
     commandObj->execute(args);
 }

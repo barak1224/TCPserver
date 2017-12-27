@@ -7,14 +7,17 @@
 
 #include <vector>
 #include <string>
+#include "CommandsManager.h"
 
 using namespace std;
+
 /**
  * Command interface, to be in charge
  */
 class Command {
 public:
-    virtual void execute(vector<string> args) = 0;
+    virtual void execute(vector<string> args, ClientData data) = 0;
+
     virtual ~Command() {}
 };
 

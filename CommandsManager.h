@@ -8,19 +8,27 @@
 #include <map>
 #include "Command.h"
 #include "Server.h"
-
+#include "ClientData.h"
 
 class CommandsManager {
 public:
-    CommandsManager(Server* server);
-    ~CommandsManager();
-    void executeCommand(string command, vector<string> args);
+
+
     struct GameroomData {
         int socket1;
         int socket2;
         //TODO maybe something more?
     };
-    Server *getServer() { return this->server;}
+
+    CommandsManager(Server *server);
+
+    ~CommandsManager();
+
+    void executeCommand(string command, vector<string> args, ClientData data);
+
+
+    Server *getServer() { return this->server; }
+
 private:
     Server *server;
     map<string, Command *> commandsMap;

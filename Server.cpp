@@ -9,14 +9,6 @@ using namespace std;
 void *acceptConnections(void *tArgs);
 void *handleClient(void *clientSocket);
 
-struct ClientData {
-    int clientSocket;
-    Server *server;
-    pthread_t *threadID;
-};
-
-
-
 Server::Server(int port) : port(port), serverSocket(0) {
     this->commandsManager = new CommandsManager(this);
     cout << "Server" << endl;
@@ -72,7 +64,9 @@ void *acceptConnections(void *tArgs) {
     int serverSocket = server->getServerSocket();
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLen;
-    vector<pthread_t*>threadsList;
+
+    vector<pthread_t*>threadsList = server->getThreadList();
+
     while (true) {
         cout << "Waiting for client connections..." << endl;
         // Accept a new client connection
@@ -91,7 +85,7 @@ void *acceptConnections(void *tArgs) {
         clientData->server = server;
         clientData->threadID = handleClientThread;
 
-        int rch = pthread_create(handleClientThread, NULL, handleClient, (void *) clientSocket);
+        int rch = pthread_create(handleClientThread, NULL, handleClient, (void *) clientData);
         if (rch) {
             cout << "Error: unable to create thread, " << rch << endl;
             exit(-1);
@@ -102,7 +96,25 @@ void *acceptConnections(void *tArgs) {
     }
 }
 
-void *handleClient(void *clientSocket) {
+void *handleClient(void *clientData) {
+    ClientData *data = (ClientData *)clientData;
+    Server *server = data->server;
+    int clientSocket = data->clientSocket;
+    CommandsManager *manager = server->getCommandsManager();
+    char buffer[MAX_LENGTH];
+    int n = read(clientSocket, buffer, MAX_LENGTH);
+    // get the commands
+    string commandStr(buffer);
+    string command = commandStr.substr(0, commandStr.find(" "));
+    commandStr = commandStr.substr(commandStr.find(" "));
+    vector<string> args;
+    char *tok = strtok (commandStr," ,.-");
+    while (tok != NULL)
+    {
+        args.push_back(tok);
+        tok = strtok (NULL, " ,.-");
+    }
 
+    manager->executeCommand(command, args);
 }
 
