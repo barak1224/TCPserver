@@ -13,9 +13,9 @@ void StartCommand::execute(vector<string> args, ClientData data) {
     if (openGames->find(roomName) == openGames->end()) {
         string message = "exists";
         int n = write(clientSocket, &message, sizeof(message));
-    } else {
+    } else {l
 
-        openGames[roomName] = clientSocket;
+        this->openGames[roomName] = clientSocket;
         string message = "open";
         int n = write(clientSocket, &message, sizeof(message));
     }

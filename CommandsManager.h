@@ -30,8 +30,8 @@ private:
     Server *server;
     map<string, Command *> commandsMap;
 
-    map<string, GameroomData> *lobbyMap;
-    map<string, int> *openGames;
+    map<string, GameroomData> lobbyMap;
+    map<string, int> openGames;
 };
 
 #endif //TCPSERVER_COMMANDMANAGER_H

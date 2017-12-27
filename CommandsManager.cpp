@@ -17,7 +17,7 @@ CommandsManager::CommandsManager(Server *server) {
     commandsMap["list_games"] = new PrintCommand(openGames);
     commandsMap["join"] = new JoinCommand(&openGames, &lobbyMap);
     commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
-    commandsMap["start"] = new StartCommand(openGames);
+    commandsMap["start"] = new StartCommand(&openGames);
 }
 void CommandsManager::executeCommand(string command, vector<string> args, ClientData data) {
     Command *commandObj = commandsMap[command];
