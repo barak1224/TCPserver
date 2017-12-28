@@ -7,9 +7,8 @@
 CloseCommand::CloseCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap) : openGames(openGames),
                                                                                                lobbyMap(lobbyMap) {}
 
-void CloseCommand::execute(vector<string> args, ClientData *data) {
+void CloseCommand::execute(vector<string> args, int clientSocket) {
     string roomName = args[0];
-    int clientSocket = data->clientSocket;
     if (openGames->find(roomName) == openGames->end()) {
         sendToClient(clientSocket, "failure");
     } else {

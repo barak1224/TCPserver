@@ -11,13 +11,11 @@
 class StartCommand : public Command {
 public:
     StartCommand(map<string, int> *openGames);
-    virtual void execute(vector<string> args, ClientData *data);
+    virtual void execute(vector<string> args, int clientSocket);
     virtual ~StartCommand() {}
 
 private:
     map<string, int> *openGames;
-    void sendToClient(int clientSocket, string message);
-
     void sendToClient(int clientSocket, string message) const;
 };
 

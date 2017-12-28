@@ -39,7 +39,6 @@ void Server::start() {
         string command;
         cin >> command;
         if (strcmp("exit", command.c_str()) == 0) {
-            closeAllThreads();
             break;
         }
     }
@@ -125,7 +124,7 @@ void *handleClient(void *clientData) {
         tok = strtok (NULL, separators.c_str());
     }
 
-    manager->executeCommand(command, args, data);
+    manager->executeCommand(command, args, clientSocket);
     pthread_exit(data->threadID);
 }
 
