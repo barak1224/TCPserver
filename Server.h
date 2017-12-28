@@ -1,6 +1,12 @@
 #ifndef SERVER_SERVER_H
 #define SERVER_SERVER_H
 
+#define ERROR -1
+#define VALID 1
+#define DISCONNECT 0
+#define MAX_CONNECTED_CLIENTS 2
+#define MAX_LENGTH 30
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -10,14 +16,10 @@
 #include <sstream>
 #include <cstring>
 #include <pthread.h>
+
+using namespace std;
+
 #include "CommandsManager.h"
-
-#define ERROR -1
-#define VALID 1
-#define DISCONNECT 0
-#define MAX_CONNECTED_CLIENTS 2
-#define MAX_LENGTH 30
-
 
 class Server {
 public:

@@ -9,9 +9,14 @@
 #include "Command.h"
 
 class PlayCommand : public Command {
+private:
+    map<string, GameroomData> *lobbyMap;
+    map<string, int> *openGames;
 public:
-    virtual void execute(vector<string> args);
+    virtual void execute(vector<string> args, ClientData *data);
     virtual ~PlayCommand() {}
+
+    void sendToClient(int clientSocket, string message) const;
 };
 
 

@@ -9,10 +9,17 @@ using namespace std;
 void *acceptConnections(void *tArgs);
 void *handleClient(void *clientSocket);
 
+struct ClientData {
+    int clientSocket;
+    Server *server;
+    pthread_t *threadID;
+};
+
 Server::Server(int port) : port(port), serverSocket(0) {
-    this->commandsManager = new CommandsManager(this);
+    this->commandsManager = new CommandsManager();
     cout << "Server" << endl;
 }
+
 
 void Server::stop() {
     close(serverSocket);
@@ -31,7 +38,7 @@ void Server::start() {
     while(true) {
         string command;
         cin >> command;
-        if (strcmp("exit", command) == 0) {
+        if (strcmp("exit", command.c_str()) == 0) {
             closeAllThreads();
             break;
         }
@@ -80,7 +87,7 @@ void *acceptConnections(void *tArgs) {
         pthread_t *handleClientThread = new pthread_t();
         threadsList.push_back(handleClientThread);              // save the thread on the list
 
-        struct ClientData *clientData = new struct ClientData();    // create the struct for the data
+        ClientData *clientData = new struct ClientData();    // create the struct for the data
         clientData->clientSocket = clientSocket;
         clientData->server = server;
         clientData->threadID = handleClientThread;
@@ -97,7 +104,7 @@ void *acceptConnections(void *tArgs) {
 }
 
 void *handleClient(void *clientData) {
-    ClientData *data = (ClientData *)clientData;
+    struct ClientData *data = (struct ClientData *)clientData;
     Server *server = data->server;
     int clientSocket = data->clientSocket;
     CommandsManager *manager = server->getCommandsManager();
@@ -107,15 +114,18 @@ void *handleClient(void *clientData) {
     string commandStr(buffer);
     string command = commandStr.substr(0, commandStr.find(" "));
     commandStr = commandStr.substr(commandStr.find(" "));
+    char * commandChar;
+    strcpy(commandChar,commandStr.c_str());
     vector<string> args;
-    char *tok = strtok (commandStr," ,.-");
+    string separators = " ";
+    char *tok = strtok (commandChar,separators.c_str());
     while (tok != NULL)
     {
         args.push_back(tok);
-        tok = strtok (NULL, " ,.-");
+        tok = strtok (NULL, separators.c_str());
     }
 
-    manager->executeCommand(command, args, *data);
+    manager->executeCommand(command, args, data);
     pthread_exit(data->threadID);
 }
 

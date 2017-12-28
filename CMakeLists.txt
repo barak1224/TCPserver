@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(TCPserver)
 
 set(CMAKE_CXX_STANDARD 98)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -pthread")
 set(SOURCE_FILES main.cpp
                 Server.cpp
                 Server.h
@@ -21,6 +21,5 @@ set(SOURCE_FILES main.cpp
                 CloseCommand.h
                 StartCommand.cpp
                 StartCommand.h
-                ClientData.h
-        )
+        GameroomData.h)
 add_executable(TCPserver ${SOURCE_FILES})

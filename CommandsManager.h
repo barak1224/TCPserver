@@ -5,29 +5,25 @@
 #ifndef TCPSERVER_COMMANDMANAGER_H
 #define TCPSERVER_COMMANDMANAGER_H
 
-#include <map>
+#define ERROR -1
+
 #include "Command.h"
-#include "Server.h"
-#include "ClientData.h"
+#include "GameroomData.h"
+
+#include <vector>
+#include <map>
+
 
 class CommandsManager {
-public:
-    struct GameroomData {
-        int socket1;
-        int socket2;
-        string name;
-    };
 
-    CommandsManager(Server *server);
+public:
+    CommandsManager();
 
     ~CommandsManager();
 
-    void executeCommand(string command, vector<string> args, ClientData data);
-
-    Server *getServer() { return this->server; }
+    void executeCommand(string command, vector<string> args, struct ClientData *data);
 
 private:
-    Server *server;
     map<string, Command *> commandsMap;
 
     map<string, GameroomData> lobbyMap;

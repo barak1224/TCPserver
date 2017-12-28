@@ -11,10 +11,11 @@
 
 class PrintCommand : public Command {
 private:
-    map<string, int> openGames;
+    map<string, int> *openGames;
+    virtual void sendToClient(int clientSocket, string message) const;
 public:
-    PrintCommand(map<string, int> openGames);
-    virtual void execute(vector<string> args);
+    PrintCommand(map<string, int> *openGames);
+    virtual void execute(vector<string> args, ClientData *data);
     virtual ~PrintCommand() {}
 };
 

@@ -11,15 +11,14 @@
 
 pthread_mutex_t mutex;
 
-CommandsManager::CommandsManager(Server *server) {
-    this->server = server;
+CommandsManager::CommandsManager() {
     commandsMap["play"] = new PlayCommand();
-    commandsMap["list_games"] = new PrintCommand(openGames);
+    commandsMap["list_games"] = new PrintCommand(&openGames);
     commandsMap["join"] = new JoinCommand(&openGames, &lobbyMap);
     commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
     commandsMap["start"] = new StartCommand(&openGames);
 }
-void CommandsManager::executeCommand(string command, vector<string> args, ClientData data) {
+void CommandsManager::executeCommand(string command, vector<string> args, ClientData *data) {
     Command *commandObj = commandsMap[command];
     // lock it so only one gets access to the commands at a time
     pthread_mutex_lock(&mutex);

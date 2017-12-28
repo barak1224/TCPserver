@@ -9,8 +9,14 @@
 #include "Command.h"
 
 class JoinCommand : public Command {
+
+private:
+    map<string, GameroomData> *lobbyMap;
+    map<string, int> *openGames;
+    virtual void sendToClient(int clientSocket, string message) const;
 public:
-    virtual void execute(vector<string> args);
+    JoinCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap);
+    virtual void execute(vector<string> args, ClientData *data);
     virtual ~JoinCommand() {}
 };
 
