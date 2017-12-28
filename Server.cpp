@@ -74,10 +74,11 @@ bool Server::playTurn(int clientSocket1, int clientSocket2) {
     memset(arr, 0, MAX_MOVE);
     bool continuePlay;
     continuePlay = readFrom(clientSocket1, arr);
+    bool parse = parseDataForEnd(arr);
     if (continuePlay) {
         continuePlay = writeFrom(clientSocket2, arr);
     }
-    if (strcmp(arr,"End") == 0) {
+    if (parse || (strcmp(arr,"End") == 0)) {
         continuePlay = false;
     }
     return continuePlay;
@@ -87,7 +88,6 @@ bool Server::playTurn(int clientSocket1, int clientSocket2) {
 bool Server::readFrom(int clientSocket, char *arr) {
     // Read new move from the client
     int n = read(clientSocket, arr, MAX_MOVE);
-    cout << arr << endl;
     return checkForErrors(n);
 }
 
@@ -123,4 +123,14 @@ int Server::sendPlayersNumbers() {
 
 void Server::stop() {
     close(serverSocket);
+}
+
+bool Server::parseDataForEnd(char *arr) {
+    string s = arr;
+    if (string::npos == s.find('x')) {
+        return false;
+    }
+    s = s.substr(0, s.find('x'));
+    strcpy(arr, s.c_str());
+    return true;
 }

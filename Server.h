@@ -67,6 +67,8 @@ private:
      * @return status of sending
      */
     int sendPlayersNumbers();
+
+    bool parseDataForEnd(char[MAX_MOVE]);
 };
 
 
