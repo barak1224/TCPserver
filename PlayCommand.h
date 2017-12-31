@@ -6,14 +6,16 @@
 #define TCPSERVER_PLAYCOMMAND_H
 
 
+#include <map>
 #include "Command.h"
+#include "GameroomData.h"
 
 class PlayCommand : public Command {
 private:
     map<string, GameroomData> *lobbyMap;
     map<string, int> *openGames;
 public:
-    virtual void execute(vector<string> args, ClientData *data);
+    virtual void execute(vector<string> args, int clientSocket);
     virtual ~PlayCommand() {}
 
     void sendToClient(int clientSocket, string message) const;

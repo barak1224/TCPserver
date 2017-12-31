@@ -18,11 +18,11 @@ CommandsManager::CommandsManager() {
     commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
     commandsMap["start"] = new StartCommand(&openGames);
 }
-void CommandsManager::executeCommand(string command, vector<string> args, ClientData *data) {
+void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket) {
     Command *commandObj = commandsMap[command];
     // lock it so only one gets access to the commands at a time
     pthread_mutex_lock(&mutex);
-    commandObj->execute(args, data);
+    commandObj->execute(args, clientSocket);
     pthread_mutex_unlock(&mutex);
 }
 CommandsManager::~CommandsManager() {

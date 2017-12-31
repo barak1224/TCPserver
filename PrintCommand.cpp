@@ -6,7 +6,7 @@
 
 PrintCommand::PrintCommand(map<string, int> *openGames) : openGames(openGames) {}
 
-void PrintCommand::execute(vector<string> args, ClientData *data) {
+void PrintCommand::execute(vector<string> args, int clientSocket) {
     string result = "";
     if (!openGames->empty()) {
         result = "List of Games:\n";
@@ -18,9 +18,9 @@ void PrintCommand::execute(vector<string> args, ClientData *data) {
     } else {
         result = "There are no open games\n";
     }
-    sendToClient(data->clientSocket, result);
+    sendToClient(clientSocket, result);
     // the client only wanted to print, so the socket is closed now
-    close(data->clientSocket);
+    close(clientSocket);
 }
 
 

@@ -15,7 +15,7 @@ private:
     virtual void sendToClient(int clientSocket, string message) const;
 public:
     PrintCommand(map<string, int> *openGames);
-    virtual void execute(vector<string> args, ClientData *data);
+    virtual void execute(vector<string> args, int clientSocket);
     virtual ~PrintCommand() {}
 };
 

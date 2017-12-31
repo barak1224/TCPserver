@@ -7,12 +7,11 @@
 JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap) : openGames(openGames),
                                                                                              lobbyMap(lobbyMap) {}
 
-void JoinCommand::execute(vector<string> args, ClientData *data) {
+void JoinCommand::execute(vector<string> args, int clientSocket2) {
     string roomName = args[0];
-    int clientSocket2 = data->clientSocket;
     if (openGames->find(roomName) != openGames->end()) {
         int clientSocket1 = (*openGames)[roomName];
-        GameroomData roomData = struct GameroomData();
+        GameroomData roomData;
         roomData.socket1 = clientSocket1;
         roomData.socket2 = clientSocket2;
         roomData.name = roomName;

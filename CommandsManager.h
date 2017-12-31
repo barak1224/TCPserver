@@ -21,11 +21,10 @@ public:
 
     ~CommandsManager();
 
-    void executeCommand(string command, vector<string> args, struct ClientData *data);
+    void executeCommand(string command, vector<string> args, int clientSocket);
 
 private:
     map<string, Command *> commandsMap;
-
     map<string, GameroomData> lobbyMap;
     map<string, int> openGames;
 };

@@ -6,10 +6,9 @@
 
 StartCommand::StartCommand(map<string, int> *openGames) : openGames(openGames) {}
 
-void StartCommand::execute(vector<string> args, ClientData *data) {
+void StartCommand::execute(vector<string> args, int clientSocket) {
     // args[0] is the name of the created game
     string roomName = args[0];
-    int clientSocket = data->clientSocket;
     if (openGames->find(roomName) != openGames->end()) {
         string message = "failure";
         sendToClient(clientSocket, message);

@@ -15,7 +15,7 @@ private:
     virtual void sendToClient(int clientSocket, string message) const;
 public:
     CloseCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap);
-    virtual void execute(vector<string> args, ClientData *data);
+    virtual void execute(vector<string> args, int clientSocket);
     virtual ~CloseCommand() {}
 };
 

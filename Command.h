@@ -8,23 +8,27 @@
 
 #define  SUCCESS "success"
 #define  FAILURE "failure"
+#define ERROR -1
 
 
 #include <string>
-#include "Server.h"
-
-using namespace std;
+#include <vector>
+#include <map>
+#include <unistd.h>
+#include "GameroomData.h"
 
 /**
  * Command interface, to be in charge
  */
+
+using namespace std;
 
 class Command {
 private:
     virtual void sendToClient(int clientSocket, string message) const = 0;
 
 public:
-    virtual void execute(vector<string> args, struct ClientData *data) = 0;
+    virtual void execute(vector<string> args, int clientSocket) = 0;
 
     virtual ~Command() {}
 };
