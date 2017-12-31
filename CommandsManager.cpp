@@ -9,21 +9,21 @@
 #include "CloseCommand.h"
 #include "StartCommand.h"
 
-pthread_mutex_t mutex;
+pthread_mutex_t mutex1;
 
 CommandsManager::CommandsManager() {
     commandsMap["play"] = new PlayCommand();
-    commandsMap["list_games"] = new PrintCommand(&openGames);
-    commandsMap["join"] = new JoinCommand(&openGames, &lobbyMap);
-    commandsMap["close"] = new CloseCommand(&openGames, &lobbyMap);
-    commandsMap["start"] = new StartCommand(&openGames);
+    commandsMap["list_games"] = new PrintCommand(openGames);
+    commandsMap["join"] = new JoinCommand(openGames, lobbyMap);
+    commandsMap["close"] = new CloseCommand(openGames, lobbyMap);
+    commandsMap["start"] = new StartCommand(openGames);
 }
-void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket) {
+void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket1, int clientSocket2) {
     Command *commandObj = commandsMap[command];
     // lock it so only one gets access to the commands at a time
-    pthread_mutex_lock(&mutex);
-    commandObj->execute(args, clientSocket);
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_lock(&mutex1);
+    commandObj->execute(args, clientSocket1, clientSocket2);
+    pthread_mutex_unlock(&mutex1);
 }
 CommandsManager::~CommandsManager() {
     map<string, Command *>::iterator it;
@@ -31,4 +31,6 @@ CommandsManager::~CommandsManager() {
         delete it->second;
     }
 }
+
+
 

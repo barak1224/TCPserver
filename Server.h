@@ -20,13 +20,16 @@
 using namespace std;
 
 #include "CommandsManager.h"
+#include "ClientHandler.h"
+
+
 
 class Server {
 public:
     Server(int port);
     void start();
     void stop();
-
+    int connectedClients;
 
     int getPort() { return this->port; }
 
@@ -35,6 +38,12 @@ public:
     vector<pthread_t*> getThreadList() {return this->threadsList;}
 
     CommandsManager* getCommandsManager() { return this->commandsManager;}
+
+    bool writeTo(int clientSocket, char *arr);
+
+    bool readFrom(int clientSocket, char *arr);
+
+
 private:
     int port;
     int serverSocket; // the socket's file descriptor
@@ -51,7 +60,14 @@ private:
      */
     void closeAllThreads();
 
+    bool checkForErrors(int n);
+
 };
 
+struct ClientData {
+    int clientSocket;
+    Server *server;
+    pthread_t *threadID;
+};
 
 #endif //SERVER_SERVER_H

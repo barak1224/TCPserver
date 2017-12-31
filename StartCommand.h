@@ -11,7 +11,7 @@
 class StartCommand : public Command {
 public:
     StartCommand(map<string, int> *openGames);
-    virtual void execute(vector<string> args, int clientSocket);
+    virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~StartCommand() {}
 
 private:

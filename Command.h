@@ -28,7 +28,7 @@ private:
     virtual void sendToClient(int clientSocket, string message) const = 0;
 
 public:
-    virtual void execute(vector<string> args, int clientSocket) = 0;
+    virtual void execute(vector<string> args, int clientSocket1, int clientSocket2) = 0;
 
     virtual ~Command() {}
 };

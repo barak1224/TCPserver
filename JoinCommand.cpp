@@ -2,12 +2,14 @@
  * Created by Josef Ginerman on 25/12/17.
  **/
 
+#define START "start"
+
 #include "JoinCommand.h"
 
 JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap) : openGames(openGames),
                                                                                              lobbyMap(lobbyMap) {}
 
-void JoinCommand::execute(vector<string> args, int clientSocket2) {
+void JoinCommand::execute(vector<string> args, int clientSocket1, int clientSocket2) {
     string roomName = args[0];
     if (openGames->find(roomName) != openGames->end()) {
         int clientSocket1 = (*openGames)[roomName];
@@ -19,8 +21,8 @@ void JoinCommand::execute(vector<string> args, int clientSocket2) {
         (*lobbyMap)[roomName] = roomData;
 
         //send numbers to the players
-        sendToClient(clientSocket1, "1");
-        sendToClient(clientSocket2, "2");
+        sendToClient(clientSocket1, START);
+        sendToClient(clientSocket2, START);
 
     } else {
         sendToClient(clientSocket2, FAILURE);
