@@ -104,7 +104,7 @@ void *acceptConnections(void *tArgs) {
         }
         // Close communication with the client
         pthread_join(*handleClientThread, NULL);
-        cout << "not waiting" << endl;
+        cout << "Thread closed" << endl;
 //        close(clientSocket);
         delete handleClientThread;
     }
@@ -116,9 +116,9 @@ bool Server::readFrom(int clientSocket, string &message) {
     while (true) {
         n = read(clientSocket, &buffer, sizeof(char));
         if (ERROR == n) throw "Error reading";
-        if (buffer == '\0') break;
         message += buffer;
         i++;
+        if (buffer == '\0') break;
     }
     return checkForErrors(n);
 //
@@ -134,12 +134,12 @@ bool Server::writeTo(int clientSocket, string message) {
     while (i < message.length()) {
         buffer =  message.at(i);
         n = write(clientSocket, &buffer, sizeof(char));
-        if (ERROR == n) throw "Error reading";
+        if (ERROR == n) throw "Error sending message";
         i++;
     }
     buffer = '\0';
     n = write(clientSocket, &buffer, sizeof(char));
-    if (ERROR == n) throw "Error reading";
+    if (ERROR == n) throw "Error sending message";
     return checkForErrors(n);
 //
 //    // Write new move to the client

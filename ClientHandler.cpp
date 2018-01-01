@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include "ClientHandler.h"
 
-    void getCommand(char *message, string *command);
+void getCommand(string buffer, string *command);
 
-    void getArgs(char *buffer, vector<string> *args);
+void getArgs(string commandStr, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
     struct ClientData *data = (struct ClientData *) clientData;
@@ -26,12 +26,8 @@ void *ClientHandler::handleClient(void *clientData) {
     manager->executeCommand(command, args, clientSocket1);
 
     if (startRunningGame(command, args, manager)) {
-        cout << "should be running" << endl;
-//        GameroomData roomData = (*manager->getLobbyMap())[args[0]];
-//        runGame(roomData, server);
-    }
-    if (threadIsDone(command)) {
-        //TODO
+        GameroomData *roomData = (*manager->getLobbyMap())[args[0]];
+        runGame(roomData, server);
     }
 }
 
@@ -41,7 +37,7 @@ bool ClientHandler::threadIsDone(string command) {
 }
 
 bool ClientHandler::startRunningGame(string command, vector<string> args, CommandsManager *manager) {
-//    if (strcmp("join", command.c_str()) != 0)
+    return (strcmp("join", command.c_str()) == 0);
 //        return false;
 //    string roomName = args[0];
 //    map<string, GameroomData *> *lobbyMap = manager->getLobbyMap();
@@ -51,10 +47,10 @@ bool ClientHandler::startRunningGame(string command, vector<string> args, Comman
 }
 
 
-void ClientHandler::runGame(GameroomData roomData, Server *server) {
-    int clientSocket1 = roomData.socket1;
-    int clientSocket2 = roomData.socket2;
-    string roomName = roomData.name;
+void ClientHandler::runGame(GameroomData *roomData, Server *server) {
+    int clientSocket1 = roomData->socket1;
+    int clientSocket2 = roomData->socket2;
+    string roomName = roomData->name;
 
     // the actual sending messages from one player to the other
     bool playNext = CONTINUE;
@@ -69,7 +65,7 @@ void ClientHandler::runGame(GameroomData roomData, Server *server) {
 int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
     pthread_mutex_t play_mutex;
     CommandsManager *manager = server->getCommandsManager();
-    char *message = NULL;
+    string message = NULL;
     if (server->readFrom(socket1, message)) {
         string command;
         getCommand(message, &command);
@@ -87,15 +83,17 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
     }
 }
 
-void getCommand(char *buffer, string *command) {
-    string commandStr(buffer);
-    *command = commandStr.substr(0, commandStr.find(" "));
+void getCommand(string buffer, string *command) {
+    *command = buffer.substr(0, buffer.find(" "));
 }
 
 
-void getArgs(char *buffer, vector<string> *args) {
+void getArgs(string commandStr, vector<string> *args) {
+    if (commandStr.find(" ") == ERROR) {
+        args->push_back("");
+        return;
+    }
     // get the commands
-    string commandStr(buffer);
     commandStr = commandStr.substr(commandStr.find(" "));
     char *commandChar = new char[MAX_LENGTH];
     strcpy(commandChar, commandStr.c_str());

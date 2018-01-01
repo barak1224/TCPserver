@@ -10,10 +10,8 @@ void PrintCommand::execute(vector<string> args, int clientSocket1, int clientSoc
     string result = "";
     if (!openGames->empty()) {
         result = "List of Games:\n";
-        string next = " ";
         for (std::map<string, int>::iterator it = openGames->begin(); it != openGames->end(); ++it) {
-            next.append("\t" + it->first + "\n");
-            result.append(next);
+            result.append("\t" + it->first + "\n");
         }
     } else {
         result = "There are no open games\n";
@@ -26,7 +24,16 @@ void PrintCommand::execute(vector<string> args, int clientSocket1, int clientSoc
 
 
 void PrintCommand::sendToClient(int clientSocket, string message) const {
-    int n = write(clientSocket, &message, sizeof(message));
-    if (n == ERROR)
-        throw "Error writing to client " + message;
+    char buffer;
+    int i = 0, n;
+    while (i < message.length()) {
+        buffer =  message.at(i);
+        n = write(clientSocket, &buffer, sizeof(char));
+        if (ERROR == n) throw "Error sending message";
+        i++;
+    }
+    buffer = '\0';
+    n = write(clientSocket, &buffer, sizeof(char));
+    if (ERROR == n) throw "Error sending message";
+
 }

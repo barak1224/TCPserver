@@ -20,7 +20,7 @@ private:
 
     static bool startRunningGame(string command, vector<string> args, CommandsManager *manager);
 
-    static void runGame(GameroomData roomData, Server *server);
+    static void runGame(GameroomData *roomData, Server *server);
 
     static int playOneTurn(int socket1, int socket2, Server *server);
 

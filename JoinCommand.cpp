@@ -32,11 +32,15 @@ void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSock
 }
 
 void JoinCommand::sendToClient(int clientSocket, string message) const {
-    char *convert = new char[MAX_LENGTH];
-    memset(convert, 0, MAX_LENGTH);
-    strcpy(convert, message.c_str());
-    int n = write(clientSocket, &message, sizeof(message));
-    delete convert;
-    if (n == ERROR)
-        throw "Error writing to client " + message;
+    char buffer;
+    int i = 0, n;
+    while (i < message.length()) {
+        buffer =  message.at(i);
+        n = write(clientSocket, &buffer, sizeof(char));
+        if (ERROR == n) throw "Error sending message";
+        i++;
+    }
+    buffer = '\0';
+    n = write(clientSocket, &buffer, sizeof(char));
+    if (ERROR == n) throw "Error sending message";
 }
