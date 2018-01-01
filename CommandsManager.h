@@ -23,12 +23,12 @@ public:
 
     void executeCommand(string command, vector<string> args, int clientSocket1, int clientSocket2 = 0);
 
-    map<string, GameroomData>* getLobbyMap() { return this->lobbyMap; }
+    map<string, GameroomData *>* getLobbyMap() { return this->lobbyMap; }
     map<string, int>* getOpenGames() { return this->openGames; }
 
 private:
     map<string, Command *> commandsMap;
-    map<string, GameroomData> *lobbyMap;
+    map<string, GameroomData *> *lobbyMap;
     map<string, int> *openGames;
 };
 

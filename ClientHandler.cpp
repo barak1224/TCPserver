@@ -2,6 +2,7 @@
  * Created by Josef Ginerman on 29/12/17.
  **/
 
+#include <cstdlib>
 #include "ClientHandler.h"
 
     void getCommand(char *message, string *command);
@@ -25,8 +26,9 @@ void *ClientHandler::handleClient(void *clientData) {
     manager->executeCommand(command, args, clientSocket1);
 
     if (startRunningGame(command, args, manager)) {
-        GameroomData roomData = (*manager->getLobbyMap())[args[0]];
-        runGame(roomData, server);
+        cout << "should be running" << endl;
+//        GameroomData roomData = (*manager->getLobbyMap())[args[0]];
+//        runGame(roomData, server);
     }
     if (threadIsDone(command)) {
         //TODO
@@ -39,13 +41,13 @@ bool ClientHandler::threadIsDone(string command) {
 }
 
 bool ClientHandler::startRunningGame(string command, vector<string> args, CommandsManager *manager) {
-    if (strcmp("join", command.c_str()) != 0)
-        return false;
-    string roomName = args[0];
-    map<string, GameroomData> *lobbyMap = manager->getLobbyMap();
-    {
-        return lobbyMap->find(roomName) != lobbyMap->end();
-    }
+//    if (strcmp("join", command.c_str()) != 0)
+//        return false;
+//    string roomName = args[0];
+//    map<string, GameroomData *> *lobbyMap = manager->getLobbyMap();
+//    {
+//        return lobbyMap->find(roomName) != lobbyMap->end();
+//    }
 }
 
 

@@ -39,9 +39,9 @@ public:
 
     CommandsManager* getCommandsManager() { return this->commandsManager;}
 
-    bool writeTo(int clientSocket, char *arr);
+    static bool writeTo(int clientSocket, string message);
 
-    bool readFrom(int clientSocket, char *arr);
+    static bool readFrom(int clientSocket, string &message);
 
 
 private:
@@ -60,7 +60,7 @@ private:
      */
     void closeAllThreads();
 
-    bool checkForErrors(int n);
+    static bool checkForErrors(int n);
 
 };
 

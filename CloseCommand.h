@@ -10,11 +10,11 @@
 
 class CloseCommand : public Command {
 private:
-    map<string, GameroomData> *lobbyMap;
+    map<string, GameroomData *> *lobbyMap;
     map<string, int> *openGames;
     virtual void sendToClient(int clientSocket, string message) const;
 public:
-    CloseCommand(map<string, int> *openGames, map<string, GameroomData> *lobbyMap);
+    CloseCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap);
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~CloseCommand() {}
 };

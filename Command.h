@@ -5,12 +5,11 @@
 #ifndef TCPSERVER_COMMAND_H
 #define TCPSERVER_COMMAND_H
 
-
-#define  SUCCESS "success"
-#define  FAILURE "failure"
+#define MAX_LENGTH 30
+#define  FAILURE "-1"
 #define ERROR -1
 
-
+#include <cstring>
 #include <string>
 #include <vector>
 #include <map>

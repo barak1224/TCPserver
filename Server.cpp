@@ -104,27 +104,52 @@ void *acceptConnections(void *tArgs) {
         }
         // Close communication with the client
         pthread_join(*handleClientThread, NULL);
-        close(clientSocket);
+        cout << "not waiting" << endl;
+//        close(clientSocket);
         delete handleClientThread;
     }
 }
 
-bool Server::readFrom(int clientSocket, char *arr) {
-    // Read new move from the client
-    int n = read(clientSocket, arr, MAX_LENGTH);
-    cout << arr << endl;
+bool Server::readFrom(int clientSocket, string &message) {
+    int i = 0, n;
+    char buffer;
+    while (true) {
+        n = read(clientSocket, &buffer, sizeof(char));
+        if (ERROR == n) throw "Error reading";
+        if (buffer == '\0') break;
+        message += buffer;
+        i++;
+    }
     return checkForErrors(n);
+//
+//    // Read new move from the client
+//    int n = read(clientSocket, arr, MAX_LENGTH);
+//    cout << arr << endl;
+//    return checkForErrors(n);
 }
 
-bool Server::writeTo(int clientSocket, char arr[MAX_LENGTH]) {
-    // Write new move to the client
-    int n = write(clientSocket, arr, MAX_LENGTH);
+bool Server::writeTo(int clientSocket, string message) {
+    char buffer;
+    int i = 0, n;
+    while (i < message.length()) {
+        buffer =  message.at(i);
+        n = write(clientSocket, &buffer, sizeof(char));
+        if (ERROR == n) throw "Error reading";
+        i++;
+    }
+    buffer = '\0';
+    n = write(clientSocket, &buffer, sizeof(char));
+    if (ERROR == n) throw "Error reading";
     return checkForErrors(n);
+//
+//    // Write new move to the client
+//    int n = write(clientSocket, arr, MAX_LENGTH);
+//    return checkForErrors(n);
 }
 
 bool Server::checkForErrors(int n) {
     if (n == ERROR) {
-        cout << "Error reading chosen move" << endl;
+        cout << "Error reading" << endl;
         return false;
     }
     if (n == DISCONNECT) {

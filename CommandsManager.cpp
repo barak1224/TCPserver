@@ -13,6 +13,7 @@ pthread_mutex_t mutex1;
 
 CommandsManager::CommandsManager() {
     openGames = new map<string,int>();
+    lobbyMap = new map<string, GameroomData *>();
     commandsMap["play"] = new PlayCommand();
     commandsMap["list_games"] = new PrintCommand(openGames);
     commandsMap["join"] = new JoinCommand(openGames, lobbyMap);
@@ -22,16 +23,22 @@ CommandsManager::CommandsManager() {
 void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket1, int clientSocket2) {
     Command *commandObj = commandsMap[command];
     // lock it so only one gets access to the commands at a time
+    cout << "The command is " << command << endl;
     pthread_mutex_lock(&mutex1);
     commandObj->execute(args, clientSocket1, clientSocket2);
     pthread_mutex_unlock(&mutex1);
 }
 CommandsManager::~CommandsManager() {
     map<string, Command *>::iterator it;
+    map<string, GameroomData *>::iterator it2;
     for (it = commandsMap.begin(); it != commandsMap.end(); it++) {
         delete it->second;
     }
     delete(openGames);
+    for (it2 = lobbyMap->begin(); it2 != lobbyMap->end(); it2++) {
+        delete it->second;
+    }
+    delete lobbyMap;
 }
 
 
