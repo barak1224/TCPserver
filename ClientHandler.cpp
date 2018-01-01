@@ -10,6 +10,7 @@ void getCommand(string buffer, string *command);
 void getArgs(string commandStr, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
+    cout << "I am here" << endl;
     struct ClientData *data = (struct ClientData *) clientData;
     Server *server = data->server;
     int clientSocket1 = data->clientSocket;
@@ -59,7 +60,7 @@ void ClientHandler::runGame(GameroomData *roomData, Server *server) {
 int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
 //    pthread_mutex_t play_mutex;
     CommandsManager *manager = server->getCommandsManager();
-    string message = NULL;
+    string message = "";
     if (server->readFrom(socket1, message)) {
         string command;
         getCommand(message, &command);

@@ -24,7 +24,8 @@ void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSock
         sendToClient(clientSocket1, "1");
         sendToClient(clientSocket2, "2");
         cout << "Successfully joined game players " << clientSocket1 << " and " << clientSocket2 << endl;
-    } else {                                                //failed finding the room
+    } else {
+        cout << "here"; //failed finding the room
         sendToClient(clientSocket2, FAILURE);
     }
 }

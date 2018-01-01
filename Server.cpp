@@ -103,11 +103,11 @@ void *acceptConnections(void *tArgs) {
             exit(-1);
         }
         // Close communication with the client
-        pthread_join(*handleClientThread, NULL);
         cout << "Thread closed" << endl;
 //        close(clientSocket);
         delete handleClientThread;
     }
+    //pthread_join(*handleClientThread, NULL);
 }
 
 bool Server::readFrom(int clientSocket, string &message) {
@@ -116,9 +116,9 @@ bool Server::readFrom(int clientSocket, string &message) {
     while (true) {
         n = read(clientSocket, &buffer, sizeof(char));
         if (ERROR == n) throw "Error reading";
+        if (buffer == '\0') break;
         message += buffer;
         i++;
-        if (buffer == '\0') break;
     }
     return checkForErrors(n);
 //
