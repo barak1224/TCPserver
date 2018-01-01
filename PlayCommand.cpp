@@ -4,7 +4,7 @@
 
 #include "PlayCommand.h"
 
-void PlayCommand::execute(vector<string> args, int clientSocket) {
+void PlayCommand::execute(vector<string> args, int clientSocket1, int clientSocket2) {
     string moveCoordinates = args[0];
 }
 

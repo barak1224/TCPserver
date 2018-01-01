@@ -15,7 +15,7 @@ private:
     map<string, GameroomData> *lobbyMap;
     map<string, int> *openGames;
 public:
-    virtual void execute(vector<string> args, int clientSocket);
+    virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~PlayCommand() {}
 
     void sendToClient(int clientSocket, string message) const;
