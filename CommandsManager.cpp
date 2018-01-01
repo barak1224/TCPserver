@@ -12,6 +12,7 @@
 pthread_mutex_t mutex1;
 
 CommandsManager::CommandsManager() {
+    openGames = new map<string,int>();
     commandsMap["play"] = new PlayCommand();
     commandsMap["list_games"] = new PrintCommand(openGames);
     commandsMap["join"] = new JoinCommand(openGames, lobbyMap);
@@ -30,6 +31,7 @@ CommandsManager::~CommandsManager() {
     for (it = commandsMap.begin(); it != commandsMap.end(); it++) {
         delete it->second;
     }
+    delete(openGames);
 }
 
 

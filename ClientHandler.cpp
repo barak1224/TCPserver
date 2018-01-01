@@ -4,6 +4,9 @@
 
 #include "ClientHandler.h"
 
+    void getCommand(char *message, string *command);
+
+    void getArgs(char *buffer, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
     struct ClientData *data = (struct ClientData *) clientData;
@@ -11,12 +14,13 @@ void *ClientHandler::handleClient(void *clientData) {
     int clientSocket1 = data->clientSocket;
     CommandsManager *manager = server->getCommandsManager();
 
-
     char buffer[MAX_LENGTH];
     int n = read(clientSocket1, buffer, MAX_LENGTH);
-    // get the commands
-    string command = getCommand(buffer);
-    vector<string> args = getArgs(buffer);
+//     get the commands
+    string command;
+    getCommand(buffer, &command);
+    vector<string> args;
+    getArgs(buffer, &args);
 
     manager->executeCommand(command, args, clientSocket1);
 
@@ -65,8 +69,10 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
     CommandsManager *manager = server->getCommandsManager();
     char *message = NULL;
     if (server->readFrom(socket1, message)) {
-        string command = getCommand(message);
-        vector<string> args = getArgs(message);
+        string command;
+        getCommand(message, &command);
+        vector<string> args;
+        getArgs(message, &args);
 
         pthread_mutex_lock(&play_mutex);
         manager->executeCommand(command, args, socket1, socket2);
@@ -79,32 +85,29 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
     }
 }
 
-string ClientHandler::getCommand(char *buffer) {
+void getCommand(char *buffer, string *command) {
     string commandStr(buffer);
-    string command = commandStr.substr(0, commandStr.find(" "));
-    return command;
+    *command = commandStr.substr(0, commandStr.find(" "));
 }
 
 
-vector<string> ClientHandler::getArgs(char *buffer) {
+void getArgs(char *buffer, vector<string> *args) {
     // get the commands
     string commandStr(buffer);
     commandStr = commandStr.substr(commandStr.find(" "));
-    char *commandChar = NULL;
+    char *commandChar = new char[MAX_LENGTH];
     strcpy(commandChar, commandStr.c_str());
-    vector<string> args;
     string separators = " ";
     char *tok = strtok(commandChar, separators.c_str());
     while (tok != NULL) {
-        args.push_back(tok);
+        args->push_back(tok);
         tok = strtok(NULL, separators.c_str());
     }
-    return args;
 }
 
 
 void ClientHandler::swapSockets(int *clientSocket1, int *clientSocket2) {
-    int *temp = clientSocket1;
-    clientSocket1 = clientSocket2;
-    clientSocket2 = temp;
+    int temp = *clientSocket1;
+    *clientSocket1 = *clientSocket2;
+    *clientSocket2 = temp;
 }

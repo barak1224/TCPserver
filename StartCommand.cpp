@@ -14,6 +14,7 @@ void StartCommand::execute(vector<string> args, int clientSocket1, int clientSoc
         sendToClient(clientSocket1, message);
     } else {
         (*openGames)[roomName] = clientSocket1;
+        cout << openGames->size();
     }
 }
 

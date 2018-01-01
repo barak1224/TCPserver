@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include "Server.h"
-#include "ClientHandler.h"
 
 using namespace std;
 
@@ -42,6 +41,8 @@ void Server::start() {
             break;
         }
     }
+    pthread_join(*acceptClientsThread, NULL);
+    delete acceptClientsThread;
 }
 
 void Server::initializeServer() {
@@ -102,6 +103,7 @@ void *acceptConnections(void *tArgs) {
             exit(-1);
         }
         // Close communication with the client
+        pthread_join(*handleClientThread, NULL);
         close(clientSocket);
         delete handleClientThread;
     }

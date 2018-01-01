@@ -24,13 +24,13 @@ private:
 
     static int playOneTurn(int socket1, int socket2, Server *server);
 
-    static string getCommand(char *message);
-
 public:
 
     static void *handleClient(void *clientData);
 
-    static vector<string> getArgs(char *buffer);
+//    string getCommand(char *message);
+//
+//    vector<string> getArgs(char *buffer);
 
     static void swapSockets(int *clientSocket1, int *clientSocket2);
 };
