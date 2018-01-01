@@ -15,8 +15,8 @@ void *ClientHandler::handleClient(void *clientData) {
     int clientSocket1 = data->clientSocket;
     CommandsManager *manager = server->getCommandsManager();
 
-    char buffer[MAX_LENGTH];
-    int n = read(clientSocket1, buffer, MAX_LENGTH);
+    string  buffer;
+    int n = server->readFrom(clientSocket1, buffer);
 //     get the commands
     string command;
     getCommand(buffer, &command);
@@ -38,12 +38,6 @@ bool ClientHandler::threadIsDone(string command) {
 
 bool ClientHandler::startRunningGame(string command, vector<string> args, CommandsManager *manager) {
     return (strcmp("join", command.c_str()) == 0);
-//        return false;
-//    string roomName = args[0];
-//    map<string, GameroomData *> *lobbyMap = manager->getLobbyMap();
-//    {
-//        return lobbyMap->find(roomName) != lobbyMap->end();
-//    }
 }
 
 
@@ -63,7 +57,7 @@ void ClientHandler::runGame(GameroomData *roomData, Server *server) {
 }
 
 int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
-    pthread_mutex_t play_mutex;
+//    pthread_mutex_t play_mutex;
     CommandsManager *manager = server->getCommandsManager();
     string message = NULL;
     if (server->readFrom(socket1, message)) {
@@ -72,9 +66,9 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
         vector<string> args;
         getArgs(message, &args);
 
-        pthread_mutex_lock(&play_mutex);
+//        pthread_mutex_lock(&play_mutex);
         manager->executeCommand(command, args, socket1, socket2);
-        pthread_mutex_unlock(&play_mutex);
+//        pthread_mutex_unlock(&play_mutex);
 
         if (strcmp("close", command.c_str()) == 0)
             return END;

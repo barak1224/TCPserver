@@ -5,13 +5,22 @@
 #include "PlayCommand.h"
 
 void PlayCommand::execute(vector<string> args, int clientSocket1, int clientSocket2) {
-    string moveCoordinates = args[0];
+    //TODO CHECK INPUT if it is legal
+    sendToClient(clientSocket2, args[0]);
 }
 
 
-
 void PlayCommand::sendToClient(int clientSocket, string message) const {
-    int n = write(clientSocket, &message, sizeof(message));
-    if (n == ERROR)
-        throw "Error writing to client " + message;
+    char buffer;
+    int i = 0, n;
+    while (i < message.length()) {
+        buffer = message.at(i);
+        n = write(clientSocket, &buffer, sizeof(char));
+        cout << "writing " << buffer << endl;
+        if (ERROR == n) throw "Error sending message";
+        i++;
+    }
+    buffer = '\0';
+    n = write(clientSocket, &buffer, sizeof(char));
+    if (ERROR == n) throw "Error sending message";
 }

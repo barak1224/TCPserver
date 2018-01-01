@@ -23,10 +23,10 @@ CommandsManager::CommandsManager() {
 void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket1, int clientSocket2) {
     Command *commandObj = commandsMap[command];
     // lock it so only one gets access to the commands at a time
-    cout << "The command is " << command << endl;
-    pthread_mutex_lock(&mutex1);
+    cout << "Command Manager: the command is " << command << endl;
+//    pthread_mutex_lock(&mutex1);
     commandObj->execute(args, clientSocket1, clientSocket2);
-    pthread_mutex_unlock(&mutex1);
+//    pthread_mutex_unlock(&mutex1);
 }
 CommandsManager::~CommandsManager() {
     map<string, Command *>::iterator it;
