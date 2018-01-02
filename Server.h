@@ -31,8 +31,6 @@ public:
     void stop();
     int connectedClients;
 
-    int getPort() { return this->port; }
-
     int getServerSocket() { return this->serverSocket; }
 
     vector<pthread_t>* getThreadList() {return this->threadsList;}
@@ -51,19 +49,14 @@ private:
     int serverSocket; // the socket's file descriptor
     CommandsManager *commandsManager;
     vector<pthread_t> *threadsList;
+    vector<int> socketsList; // to send them that the server disconnected
 
     /**
      * The method initializing the server
      */
     void initializeServer();
 
-    /**
-     * Function that deals with closing all the remaining threads before closing the server.
-     */
-    void closeAllThreads();
-
     static bool checkForErrors(int n);
-
 };
 
 struct ClientData {

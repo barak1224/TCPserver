@@ -43,8 +43,13 @@ void Server::start() {
             break;
         }
     }
+    int numOfSockets = socketsList.size();
+    for (int j = 0; j < numOfSockets; j++) {
+        close(socketsList.at(j));
+    }
     pthread_cancel(acceptClientsThread);
-    for (int i = 0; i < this->threadsList->size(); i++) {
+    int numOfThreads = this->threadsList->size();
+    for (int i = 0; i < numOfThreads; i++) {
         pthread_cancel(threadsList->at(i));
     }
     exit(0);
