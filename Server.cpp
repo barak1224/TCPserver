@@ -120,12 +120,19 @@ bool Server::readFrom(int clientSocket, string &message) {
     char buffer;
     while (true) {
         n = read(clientSocket, &buffer, sizeof(char));
-        if (ERROR == n) throw "Error reading";
+        if (ERROR == n) {
+            cout << "Failed writing to client " << clientSocket << endl;
+            return false;
+        }
         if (buffer == '\0') break;
         message += buffer;
         i++;
     }
-    return checkForErrors(n);
+    if (n == DISCONNECT) {
+        cout << "Client " << clientSocket << " disconnected" << endl;
+        return false;
+    }
+    return true;
 }
 
 bool Server::writeTo(int clientSocket, string message) {
@@ -139,8 +146,11 @@ bool Server::writeTo(int clientSocket, string message) {
     }
     buffer = '\0';
     n = write(clientSocket, &buffer, sizeof(char));
-    if (ERROR == n) throw "Error sending message";
-    return checkForErrors(n);
+    if (ERROR == n)
+        cout << "Failed writing to client " << clientSocket << endl;
+    if (n == DISCONNECT)
+        cout << "Client " << clientSocket <<" disconnected" << endl;
+    return (n != DISCONNECT && n != ERROR); // true if success, else false
 }
 
 bool Server::checkForErrors(int n) {
