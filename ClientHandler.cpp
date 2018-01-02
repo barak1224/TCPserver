@@ -50,14 +50,14 @@ void ClientHandler::runGame(GameroomData *roomData, Server *server) {
     // the actual sending messages from one player to the other
     bool playNext = CONTINUE;
     while (playNext) {
-        playNext = playOneTurn(clientSocket1, clientSocket2, server);
+        playNext = playOneTurn(clientSocket1, clientSocket2, server, roomName);
         swapSockets(&clientSocket1, &clientSocket2);
     }
     close(clientSocket1);
     close(clientSocket2);
 }
 
-int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
+int ClientHandler::playOneTurn(int socket1, int socket2, Server *server, string roomName) {
 //    pthread_mutex_t play_mutex;
     CommandsManager *manager = server->getCommandsManager();
     string message = "";
@@ -66,6 +66,9 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server) {
         getCommand(message, &command);
         vector<string> args;
         getArgs(message, &args);
+        if (strcmp(command.c_str(), "close") == 0) {
+            args.push_back(roomName);
+        }
 
 //        pthread_mutex_lock(&play_mutex);
         manager->executeCommand(command, args, socket1, socket2);

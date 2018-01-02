@@ -8,11 +8,11 @@ CloseCommand::CloseCommand(map<string, int> *openGames, map<string, GameroomData
                                                                                                lobbyMap(lobbyMap) {}
 
 void CloseCommand::execute(vector<string> args, int clientSocket1, int clientSocket2) {
-    string roomName = args[0];
+    string roomName = args[2];
     if (lobbyMap->find(roomName) == lobbyMap->end()) {
         sendToClient(clientSocket1, "failure");
     } else {
-        string message = "close " + args[1];
+        string message = args[0] + " " + args[1];
         GameroomData *roomData = (*lobbyMap)[roomName];
         if(clientSocket1 == roomData->socket1) {
             sendToClient(roomData->socket2, message.c_str());
@@ -25,10 +25,16 @@ void CloseCommand::execute(vector<string> args, int clientSocket1, int clientSoc
 
 
 void CloseCommand::sendToClient(int clientSocket, string message) const {
-    char *convert = new char[MAX_LENGTH];
-    strcpy(convert, message.c_str());
-    int n = write(clientSocket, &message, sizeof(message));
-    delete convert;
-    if (n == ERROR)
-        throw "Error writing to client " + message;
+    char buffer;
+    int i = 0, n;
+    while (i < message.length()) {
+        buffer =  message.at(i);
+        n = write(clientSocket, &buffer, sizeof(char));
+        cout << "writing " << buffer << endl;
+        if (ERROR == n) throw "Error sending message";
+        i++;
+    }
+    buffer = '\0';
+    n = write(clientSocket, &buffer, sizeof(char));
+    if (ERROR == n) throw "Error sending message";
 }
