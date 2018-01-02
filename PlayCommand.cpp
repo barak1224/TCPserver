@@ -23,7 +23,6 @@ void PlayCommand::sendToClient(int clientSocket, string message) const {
     while (i < message.length()) {
         buffer = message.at(i);
         n = write(clientSocket, &buffer, sizeof(char));
-        cout << "writing " << buffer << endl;
         if (ERROR == n) throw "Error sending message";
         i++;
     }

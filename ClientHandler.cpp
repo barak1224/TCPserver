@@ -28,8 +28,9 @@ void *ClientHandler::handleClient(void *clientData) {
 
     // start running the game inside the join-command's thread
     if (startRunningGame(command, args, manager)) {
-        manager->getOpenGames()->erase(args[0]);
-        GameroomData *roomData = (*manager->getLobbyMap())[args[0]];
+        string roomName = args[0];
+        manager->getOpenGames()->erase(roomName);
+        GameroomData *roomData = (*manager->getLobbyMap())[roomName];
         runGame(roomData, server);
     }
 }

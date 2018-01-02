@@ -121,11 +121,6 @@ bool Server::readFrom(int clientSocket, string &message) {
         i++;
     }
     return checkForErrors(n);
-//
-//    // Read new move from the client
-//    int n = read(clientSocket, arr, MAX_LENGTH);
-//    cout << arr << endl;
-//    return checkForErrors(n);
 }
 
 bool Server::writeTo(int clientSocket, string message) {
