@@ -66,6 +66,9 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server, string 
         getCommand(message, &command);
         vector<string> args;
         getArgs(message, &args);
+        if (strcmp("END", command.c_str()) == 0) {
+            return END;
+        }
         if (strcmp(command.c_str(), "close") == 0) {
             args.push_back(roomName);
         }
