@@ -2,8 +2,6 @@
  * Created by Josef Ginerman on 25/12/17.
  **/
 
-#define START "start"
-
 #include "JoinCommand.h"
 
 JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap) : openGames(openGames),
@@ -40,17 +38,4 @@ void JoinCommand::sendToClient(int clientSocket, string message) const {
     buffer = '\0';
     n = write(clientSocket, &buffer, sizeof(char));
     if (ERROR == n) throw "Error sending message";
-}
-
-void JoinCommand::readFrom(int clientSocket, string &message) {
-    int i = 0, n;
-    char buffer;
-    while (true) {
-        n = read(clientSocket, &buffer, sizeof(char));
-        if (ERROR == n) throw "Error reading";
-        if (buffer == '\0') break;
-        message += buffer;
-        i++;
-    }
-    if (DISCONNECT == n) throw "Error sending message";
 }

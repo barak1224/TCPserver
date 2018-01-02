@@ -27,6 +27,7 @@ using namespace std;
 class Server {
 public:
     Server(int port);
+    ~Server();
     void start();
     void stop();
     int connectedClients;
@@ -40,9 +41,6 @@ public:
     static bool writeTo(int clientSocket, string message);
 
     static bool readFrom(int clientSocket, string &message);
-
-    ~Server();
-
 
 private:
     int port;

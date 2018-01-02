@@ -105,8 +105,6 @@ void *acceptConnections(void *tArgs) {
         clientData.clientSocket = clientSocket;
         clientData.server = server;
         clientData.threadID = handleClientThread;
-
-        ClientHandler h;
         int rch = pthread_create(&handleClientThread, NULL, ClientHandler::handleClient, (void *) &clientData);
         if (rch) {
             cout << "Error: unable to create thread, " << rch << endl;
