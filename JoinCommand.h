@@ -18,6 +18,8 @@ public:
     JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap);
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~JoinCommand() {}
+
+    void readFrom(int clientSocket, string &message);
 };
 
 

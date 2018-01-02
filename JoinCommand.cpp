@@ -7,7 +7,7 @@
 #include "JoinCommand.h"
 
 JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap) : openGames(openGames),
-                                                                                             lobbyMap(lobbyMap) {}
+                                                                                               lobbyMap(lobbyMap) {}
 
 void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSocketSpare) {
     string roomName = args[0];
@@ -19,13 +19,11 @@ void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSock
         roomData->socket2 = clientSocket2;
         roomData->name = roomName;
         lobbyMap->insert((std::pair<string, GameroomData *>(roomName, roomData)));
-        openGames->erase(roomName);
         //send numbers to the players
         sendToClient(clientSocket1, "1");
         sendToClient(clientSocket2, "2");
         cout << "Successfully joined game players " << clientSocket1 << " and " << clientSocket2 << endl;
     } else {
-        cout << "here"; //failed finding the room
         sendToClient(clientSocket2, FAILURE);
     }
 }
@@ -34,13 +32,25 @@ void JoinCommand::sendToClient(int clientSocket, string message) const {
     char buffer;
     int i = 0, n;
     while (i < message.length()) {
-        buffer =  message.at(i);
+        buffer = message.at(i);
         n = write(clientSocket, &buffer, sizeof(char));
-        cout << "writing " << buffer << endl;
         if (ERROR == n) throw "Error sending message";
         i++;
     }
     buffer = '\0';
     n = write(clientSocket, &buffer, sizeof(char));
     if (ERROR == n) throw "Error sending message";
+}
+
+void JoinCommand::readFrom(int clientSocket, string &message) {
+    int i = 0, n;
+    char buffer;
+    while (true) {
+        n = read(clientSocket, &buffer, sizeof(char));
+        if (ERROR == n) throw "Error reading";
+        if (buffer == '\0') break;
+        message += buffer;
+        i++;
+    }
+    if (DISCONNECT == n) throw "Error sending message";
 }

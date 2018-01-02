@@ -5,6 +5,7 @@
 #ifndef TCPSERVER_COMMAND_H
 #define TCPSERVER_COMMAND_H
 
+#define DISCONNECT 0
 #define MAX_LENGTH 30
 #define  FAILURE "-1"
 #define ERROR -1

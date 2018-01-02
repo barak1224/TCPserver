@@ -31,11 +31,9 @@ public:
     void stop();
     int connectedClients;
 
-    int getPort() { return this->port; }
-
     int getServerSocket() { return this->serverSocket; }
 
-    vector<pthread_t*> getThreadList() {return this->threadsList;}
+    vector<pthread_t>* getThreadList() {return this->threadsList;}
 
     CommandsManager* getCommandsManager() { return this->commandsManager;}
 
@@ -43,31 +41,28 @@ public:
 
     static bool readFrom(int clientSocket, string &message);
 
+    ~Server();
+
 
 private:
     int port;
     int serverSocket; // the socket's file descriptor
     CommandsManager *commandsManager;
-    vector<pthread_t*>threadsList;
+    vector<pthread_t> *threadsList;
+    vector<int> socketsList; // to send them that the server disconnected
 
     /**
      * The method initializing the server
      */
     void initializeServer();
 
-    /**
-     * Function that deals with closing all the remaining threads before closing the server.
-     */
-    void closeAllThreads();
-
     static bool checkForErrors(int n);
-
 };
 
 struct ClientData {
     int clientSocket;
     Server *server;
-    pthread_t *threadID;
+    pthread_t threadID;
 };
 
 #endif //SERVER_SERVER_H

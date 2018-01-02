@@ -33,6 +33,8 @@ public:
 //    vector<string> getArgs(char *buffer);
 
     static void swapSockets(int *clientSocket1, int *clientSocket2);
+
+    static bool shouldDeleteClientData(string command);
 };
 
 
