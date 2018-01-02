@@ -8,17 +8,20 @@ using namespace std;
  */
 void *acceptConnections(void *tArgs);
 
-void *handleClient(void *clientSocket);
-
-
 pthread_mutex_t mutex;
 
 Server::Server(int port) : port(port), serverSocket(0) {
+    this->threadsList = new vector<pthread_t>();
     this->connectedClients = 0;
     this->commandsManager = new CommandsManager();
     cout << "Server" << endl;
 }
 
+Server::~Server() {
+    delete commandsManager;
+    threadsList->clear();
+    delete threadsList;
+}
 
 void Server::stop() {
     close(serverSocket);
@@ -26,14 +29,13 @@ void Server::stop() {
 
 void Server::start() {
     initializeServer();
-    pthread_t *acceptClientsThread = new pthread_t();
+    pthread_t acceptClientsThread;
     Server *server = this;
-    int rc = pthread_create(acceptClientsThread, NULL, acceptConnections, (void *) server);
+    int rc = pthread_create(&acceptClientsThread, NULL, acceptConnections, (void *) server);
     if (rc) {
         cout << "Error: unable to create thread, " << rc << endl;
         exit(-1);
     }
-
     while (true) {
         string command;
         cin >> command;
@@ -41,8 +43,11 @@ void Server::start() {
             break;
         }
     }
-    pthread_join(*acceptClientsThread, NULL);
-    delete acceptClientsThread;
+    pthread_cancel(acceptClientsThread);
+    for (int i = 0; i < this->threadsList->size(); i++) {
+        pthread_cancel(threadsList->at(i));
+    }
+    exit(0);
 }
 
 void Server::initializeServer() {
@@ -68,7 +73,7 @@ void *acceptConnections(void *tArgs) {
     struct sockaddr_in clientAddress;
     socklen_t clientAddressLen;
 
-    vector<pthread_t *> threadsList = server->getThreadList();
+    vector<pthread_t> *threadsList = server->getThreadList();
 
 
     listen(serverSocket, MAX_CONNECTED_CLIENTS);
@@ -88,26 +93,21 @@ void *acceptConnections(void *tArgs) {
             throw "Error on accept";
 
         // create the thread that will handle the client
-        pthread_t *handleClientThread = new pthread_t();
-        threadsList.push_back(handleClientThread);              // save the thread on the list
+        pthread_t handleClientThread;
+        threadsList->push_back(handleClientThread);              // save the thread on the list
 
-        ClientData *clientData = new struct ClientData();    // create the struct for the data
-        clientData->clientSocket = clientSocket;
-        clientData->server = server;
-        clientData->threadID = handleClientThread;
+        ClientData clientData;    // create the struct for the data
+        clientData.clientSocket = clientSocket;
+        clientData.server = server;
+        clientData.threadID = handleClientThread;
 
         ClientHandler h;
-        int rch = pthread_create(handleClientThread, NULL, ClientHandler::handleClient, (void *) clientData);
+        int rch = pthread_create(&handleClientThread, NULL, ClientHandler::handleClient, (void *) &clientData);
         if (rch) {
             cout << "Error: unable to create thread, " << rch << endl;
             exit(-1);
         }
-        // Close communication with the client
-        cout << "Thread closed" << endl;
-//        close(clientSocket);
-        delete handleClientThread;
     }
-    //pthread_join(*handleClientThread, NULL);
 }
 
 bool Server::readFrom(int clientSocket, string &message) {
@@ -141,10 +141,6 @@ bool Server::writeTo(int clientSocket, string message) {
     n = write(clientSocket, &buffer, sizeof(char));
     if (ERROR == n) throw "Error sending message";
     return checkForErrors(n);
-//
-//    // Write new move to the client
-//    int n = write(clientSocket, arr, MAX_LENGTH);
-//    return checkForErrors(n);
 }
 
 bool Server::checkForErrors(int n) {
@@ -158,3 +154,4 @@ bool Server::checkForErrors(int n) {
     }
     return true;
 }
+

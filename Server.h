@@ -35,7 +35,7 @@ public:
 
     int getServerSocket() { return this->serverSocket; }
 
-    vector<pthread_t*> getThreadList() {return this->threadsList;}
+    vector<pthread_t>* getThreadList() {return this->threadsList;}
 
     CommandsManager* getCommandsManager() { return this->commandsManager;}
 
@@ -43,12 +43,14 @@ public:
 
     static bool readFrom(int clientSocket, string &message);
 
+    ~Server();
+
 
 private:
     int port;
     int serverSocket; // the socket's file descriptor
     CommandsManager *commandsManager;
-    vector<pthread_t*>threadsList;
+    vector<pthread_t> *threadsList;
 
     /**
      * The method initializing the server
@@ -67,7 +69,7 @@ private:
 struct ClientData {
     int clientSocket;
     Server *server;
-    pthread_t *threadID;
+    pthread_t threadID;
 };
 
 #endif //SERVER_SERVER_H

@@ -19,13 +19,11 @@ void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSock
         roomData->socket2 = clientSocket2;
         roomData->name = roomName;
         lobbyMap->insert((std::pair<string, GameroomData *>(roomName, roomData)));
-        openGames->erase(roomName);
         //send numbers to the players
         sendToClient(clientSocket1, "1");
         sendToClient(clientSocket2, "2");
         cout << "Successfully joined game players " << clientSocket1 << " and " << clientSocket2 << endl;
     } else {
-        cout << "here"; //failed finding the room
         sendToClient(clientSocket2, FAILURE);
     }
 }

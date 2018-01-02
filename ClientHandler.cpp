@@ -16,9 +16,9 @@ void *ClientHandler::handleClient(void *clientData) {
     int clientSocket1 = data->clientSocket;
     CommandsManager *manager = server->getCommandsManager();
 
-    string  buffer;
+    string buffer;
     int n = server->readFrom(clientSocket1, buffer);
-//     get the commands
+    // get the commands
     string command;
     getCommand(buffer, &command);
     vector<string> args;
@@ -26,21 +26,18 @@ void *ClientHandler::handleClient(void *clientData) {
 
     manager->executeCommand(command, args, clientSocket1);
 
+    // start running the game inside the join-command's thread
     if (startRunningGame(command, args, manager)) {
+        manager->getOpenGames()->erase(args[0]);
         GameroomData *roomData = (*manager->getLobbyMap())[args[0]];
         runGame(roomData, server);
     }
 }
 
-
-bool ClientHandler::threadIsDone(string command) {
-    return (strcmp("start", command.c_str()) == 0 || strcmp("list_games", command.c_str()) == 0);
-}
-
 bool ClientHandler::startRunningGame(string command, vector<string> args, CommandsManager *manager) {
-    return (strcmp("join", command.c_str()) == 0);
+    return (strcmp("join", command.c_str()) == 0 &&
+            manager->getOpenGames()->find(args[0]) != manager->getOpenGames()->end());
 }
-
 
 void ClientHandler::runGame(GameroomData *roomData, Server *server) {
     int clientSocket1 = roomData->socket1;
@@ -53,15 +50,20 @@ void ClientHandler::runGame(GameroomData *roomData, Server *server) {
         playNext = playOneTurn(clientSocket1, clientSocket2, server, roomName);
         swapSockets(&clientSocket1, &clientSocket2);
     }
+    server->getCommandsManager()->getLobbyMap()->erase(roomName);
     close(clientSocket1);
     close(clientSocket2);
+    delete roomData;
 }
 
+
 int ClientHandler::playOneTurn(int socket1, int socket2, Server *server, string roomName) {
-//    pthread_mutex_t play_mutex;
     CommandsManager *manager = server->getCommandsManager();
     string message = "";
     if (server->readFrom(socket1, message)) {
+        if (strcmp("close", message.c_str()) == 0) {
+            return END;
+        }
         string command;
         getCommand(message, &command);
         vector<string> args;
@@ -70,21 +72,18 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server, string 
             args.push_back(roomName);
         }
 
-//        pthread_mutex_lock(&play_mutex);
         manager->executeCommand(command, args, socket1, socket2);
-//        pthread_mutex_unlock(&play_mutex);
 
         if (strcmp("close", command.c_str()) == 0)
             return END;
         if (strcmp("play", command.c_str()) == 0)
             return CONTINUE;
-    }
+    } else return ERROR;
 }
 
 void getCommand(string buffer, string *command) {
     *command = buffer.substr(0, buffer.find(" "));
 }
-
 
 void getArgs(string commandStr, vector<string> *args) {
     if (commandStr.find(" ") == ERROR) {
@@ -102,7 +101,6 @@ void getArgs(string commandStr, vector<string> *args) {
         tok = strtok(NULL, separators.c_str());
     }
 }
-
 
 void ClientHandler::swapSockets(int *clientSocket1, int *clientSocket2) {
     int temp = *clientSocket1;
