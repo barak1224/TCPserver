@@ -16,7 +16,6 @@ void PrintCommand::execute(vector<string> args, int clientSocket1, int clientSoc
     } else {
         result = "There are no open games\n";
     }
-    cout << result << endl;
     sendToClient(clientSocket1, result);
     // the client only wanted to print, so the socket is closed now
     close(clientSocket1);

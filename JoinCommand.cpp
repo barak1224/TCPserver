@@ -12,7 +12,7 @@ JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData *
 void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSocketSpare) {
     string roomName = args[0];
     if (openGames->find(roomName) != openGames->end()) {    //success in finding the room
-        cout << "Client is connecting to room " + roomName << endl;
+        cout << "Client " << clientSocket2 <<" is connecting to room " + roomName << endl;
         int clientSocket1 = (*openGames)[roomName];
         GameroomData *roomData = new GameroomData();
         roomData->socket1 = clientSocket1;

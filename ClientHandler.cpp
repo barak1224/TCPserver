@@ -10,14 +10,13 @@ void getCommand(string buffer, string *command);
 void getArgs(string commandStr, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
-    cout << "I am here" << endl;
     struct ClientData *data = (struct ClientData *) clientData;
     Server *server = data->server;
     int clientSocket1 = data->clientSocket;
     CommandsManager *manager = server->getCommandsManager();
 
     string buffer;
-    int n = server->readFrom(clientSocket1, buffer);
+    server->readFrom(clientSocket1, buffer);
     // get the commands
     string command;
     getCommand(buffer, &command);
@@ -79,7 +78,7 @@ int ClientHandler::playOneTurn(int socket1, int socket2, Server *server, string 
             return END;
         if (strcmp("play", command.c_str()) == 0)
             return CONTINUE;
-    } else return ERROR;
+    } else return END;
 }
 
 void getCommand(string buffer, string *command) {

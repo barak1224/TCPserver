@@ -15,7 +15,6 @@ void StartCommand::execute(vector<string> args, int clientSocket1, int clientSoc
     } else {
         cout << "Client " << clientSocket1 << " opened game " << roomName << endl;
         (*openGames)[roomName] = clientSocket1;
-        cout << openGames->size() << " open games" << endl;
     }
 }
 
