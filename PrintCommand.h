@@ -9,6 +9,8 @@
 #include <map>
 #include "Command.h"
 
+#define MAX_LENGTH 30
+
 class PrintCommand : public Command {
 private:
     map<string, int> *openGames;
