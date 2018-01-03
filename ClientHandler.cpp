@@ -17,7 +17,9 @@ void *ClientHandler::handleClient(void *clientData) {
     CommandsManager *manager = server->getCommandsManager();
 
     string buffer;
-    server->readFrom(clientSocket1, buffer);
+    if (!server->readFrom(clientSocket1, buffer)) {
+        return NULL;
+    }
     // get the commands
     string command;
     getCommand(buffer, &command);
