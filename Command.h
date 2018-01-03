@@ -25,11 +25,20 @@ using namespace std;
 
 class Command {
 private:
+    /**
+     * Sending the socket client a message
+     */
     virtual void sendToClient(int clientSocket, string message) const = 0;
 
 public:
+    /**
+     * The execute method
+     */
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2) = 0;
 
+    /**
+     * Destructor
+     */
     virtual ~Command() {}
 };
 

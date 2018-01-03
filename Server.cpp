@@ -151,15 +151,3 @@ bool Server::writeTo(int clientSocket, string message) {
     return (n != DISCONNECT && n != ERROR); // true if success, else false
 }
 
-bool Server::checkForErrors(int n) {
-    if (n == ERROR) {
-        cout << "Error reading" << endl;
-        return false;
-    }
-    if (n == DISCONNECT) {
-        cout << "Client disconnected" << endl;
-        return false;
-    }
-    return true;
-}
-

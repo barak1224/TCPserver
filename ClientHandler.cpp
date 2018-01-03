@@ -5,8 +5,14 @@
 #include <cstdlib>
 #include "ClientHandler.h"
 
+/**
+ * The method parse the buffer into command
+ */
 void getCommand(string buffer, string *command);
 
+/**
+ * The method parse the buffer into args
+ */
 void getArgs(string commandStr, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
@@ -17,8 +23,10 @@ void *ClientHandler::handleClient(void *clientData) {
     CommandsManager *manager = server->getCommandsManager();
 
     string buffer;
-    server->readFrom(clientSocket1, buffer);
-    // get the commands
+    if (!server->readFrom(clientSocket1,buffer)) {
+        return NULL;
+    }
+    // parse the commands and args
     string command;
     getCommand(buffer, &command);
     vector<string> args;

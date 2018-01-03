@@ -31,15 +31,31 @@ public:
     void start();
     void stop();
     int connectedClients;
-
+    /**
+     * The method return the server socket
+     * @return serverSocket
+     */
     int getServerSocket() { return this->serverSocket; }
-
+    /**
+     * The method get the thread list of all threads were used in the runtime
+     * @return vector of threads
+     */
     vector<pthread_t>* getThreadList() {return this->threadsList;}
-
+    /**
+     * The method return the pointer to commandsManager variable
+     * @return CommandManager (the one we initialize in the constructor)
+     */
     CommandsManager* getCommandsManager() { return this->commandsManager;}
 
+    /**
+     * The method write to the use
+     * @return true for success, otherwise false
+     */
     static bool writeTo(int clientSocket, string message);
-
+    /**
+     * The method write to the use
+     * @return true for success, otherwise false
+     */
     static bool readFrom(int clientSocket, string &message);
 
 private:
@@ -53,8 +69,6 @@ private:
      * The method initializing the server
      */
     void initializeServer();
-
-    static bool checkForErrors(int n);
 };
 
 struct ClientData {

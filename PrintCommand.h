@@ -17,8 +17,17 @@ private:
     map<string, int> *openGames;
     virtual void sendToClient(int clientSocket, string message) const;
 public:
+    /**
+     * Constructor
+     */
     PrintCommand(map<string, int> *openGames, pthread_mutex_t *openGamesLock);
+    /**
+     * The method parsing the names of the open rooms into string and send it to sendToClient method
+     */
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
+    /**
+     * The destructor
+     */
     virtual ~PrintCommand() {}
 };
 

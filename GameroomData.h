@@ -10,6 +10,9 @@
 
 using namespace std;
 
+/**
+ * The struct keeps the data of the game room
+ */
 struct GameroomData {
     int socket1;
     int socket2;

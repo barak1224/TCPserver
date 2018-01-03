@@ -13,10 +13,22 @@ private:
     pthread_mutex_t *lobbyMapLock;
     map<string, GameroomData *> *lobbyMap;
     map<string, int> *openGames;
+    /**
+     * The method send to the client socket the last move before closing the room
+     */
     virtual void sendToClient(int clientSocket, string message) const;
 public:
+    /**
+     * Constructor
+     */
     CloseCommand(map<string, GameroomData *> *lobbyMap, pthread_mutex_t *lobbyMapLock);
+    /**
+     * The method executing the command
+     */
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
+    /**
+     * The destructor
+     */
     virtual ~CloseCommand() {}
 };
 

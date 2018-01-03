@@ -21,5 +21,5 @@ set(SOURCE_FILES main.cpp
                 CloseCommand.h
                 StartCommand.cpp
                 StartCommand.h
-        GameroomData.h ClientHandler.cpp ClientHandler.h GameHandler.cpp GameHandler.h)
+        GameroomData.h ClientHandler.cpp ClientHandler.h)
 add_executable(TCPserver ${SOURCE_FILES})

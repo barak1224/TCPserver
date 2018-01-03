@@ -15,18 +15,26 @@ private:
     pthread_mutex_t *lobbyMapLock;
     map<string, GameroomData *> *lobbyMap;
     map<string, int> *openGames;
-
+    /**
+     * The method send to the client socket his number before starting the game
+     */
     virtual void sendToClient(int clientSocket, string message) const;
 
 public:
+    /**
+     * Constructor
+     */
     JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap, pthread_mutex_t *openGamesLock,
                 pthread_mutex_t *lobbyMapLock);
 
+    /**
+     * The method executing the command
+     */
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
-
+    /**
+     * The destructor
+     */
     virtual ~JoinCommand() {}
-
-    void readFrom(int clientSocket, string &message);
 };
 
 
