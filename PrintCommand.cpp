@@ -4,15 +4,25 @@
 
 #include "PrintCommand.h"
 
-PrintCommand::PrintCommand(map<string, int> *openGames) : openGames(openGames) {}
+PrintCommand::PrintCommand(map<string, int> *openGames, pthread_mutex_t *openGamesLock) : openGames(openGames),
+                                                                                          openGamesLock(
+                                                                                                  openGamesLock) {}
 
 void PrintCommand::execute(vector<string> args, int clientSocket1, int clientSocket2) {
     string result = "";
-    if (!openGames->empty()) {
+    pthread_mutex_lock(openGamesLock);
+    bool empty = openGames->empty();
+    pthread_mutex_unlock(openGamesLock);
+
+    if (!empty) {
         result = "List of Games:\n";
+
+        pthread_mutex_lock(openGamesLock);
         for (std::map<string, int>::iterator it = openGames->begin(); it != openGames->end(); ++it) {
             result.append("\t" + it->first + "\n");
         }
+        pthread_mutex_unlock(openGamesLock);
+
     } else {
         result = "There are no open games\n";
     }
@@ -22,12 +32,11 @@ void PrintCommand::execute(vector<string> args, int clientSocket1, int clientSoc
 }
 
 
-
 void PrintCommand::sendToClient(int clientSocket, string message) const {
     char buffer;
     int i = 0, n;
     while (i < message.length()) {
-        buffer =  message.at(i);
+        buffer = message.at(i);
         n = write(clientSocket, &buffer, sizeof(char));
         if (ERROR == n) throw "Error sending message";
         i++;

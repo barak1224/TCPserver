@@ -4,19 +4,33 @@
 
 #include "JoinCommand.h"
 
-JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap) : openGames(openGames),
-                                                                                               lobbyMap(lobbyMap) {}
+JoinCommand::JoinCommand(map<string, int> *openGames, map<string, GameroomData *> *lobbyMap,
+                         pthread_mutex_t *openGamesLock,
+                         pthread_mutex_t *lobbyMapLock) : openGames(openGames),
+                                                          lobbyMap(lobbyMap), openGamesLock(openGamesLock),
+                                                          lobbyMapLock(lobbyMapLock) {}
 
 void JoinCommand::execute(vector<string> args, int clientSocket2, int clientSocketSpare) {
+    int clientSocket1 = 0;
     string roomName = args[0];
-    if (openGames->find(roomName) != openGames->end()) {    //success in finding the room
-        cout << "Client " << clientSocket2 <<" is connecting to room " + roomName << endl;
-        int clientSocket1 = (*openGames)[roomName];
+
+    pthread_mutex_lock(openGamesLock);
+    bool found = (openGames->find(roomName) != openGames->end());
+    if (found)
+        clientSocket1 = (*openGames)[roomName];
+    pthread_mutex_unlock(openGamesLock);
+
+    if (found) {    //success in finding the room
+        cout << "Client " << clientSocket2 << " is connecting to room " + roomName << endl;
         GameroomData *roomData = new GameroomData();
         roomData->socket1 = clientSocket1;
         roomData->socket2 = clientSocket2;
         roomData->name = roomName;
+
+        pthread_mutex_lock(lobbyMapLock);
         lobbyMap->insert((std::pair<string, GameroomData *>(roomName, roomData)));
+        pthread_mutex_unlock(lobbyMapLock);
+
         //send numbers to the players
         sendToClient(clientSocket1, "1");
         sendToClient(clientSocket2, "2");

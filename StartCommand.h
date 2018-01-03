@@ -10,11 +10,12 @@
 
 class StartCommand : public Command {
 public:
-    StartCommand(map<string, int> *openGames);
+    StartCommand(map<string, int> *openGames, pthread_mutex_t *openGamesLock);
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~StartCommand() {}
 
 private:
+    pthread_mutex_t *openGamesLock;
     map<string, int> *openGames;
     void sendToClient(int clientSocket, string message) const;
 };

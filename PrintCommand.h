@@ -13,10 +13,11 @@
 
 class PrintCommand : public Command {
 private:
+    pthread_mutex_t *openGamesLock;
     map<string, int> *openGames;
     virtual void sendToClient(int clientSocket, string message) const;
 public:
-    PrintCommand(map<string, int> *openGames);
+    PrintCommand(map<string, int> *openGames, pthread_mutex_t *openGamesLock);
     virtual void execute(vector<string> args, int clientSocket1, int clientSocket2);
     virtual ~PrintCommand() {}
 };

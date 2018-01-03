@@ -10,6 +10,7 @@ void getCommand(string buffer, string *command);
 void getArgs(string commandStr, vector<string> *args);
 
 void *ClientHandler::handleClient(void *clientData) {
+    pthread_mutex_t mapLock;
     struct ClientData *data = (struct ClientData *) clientData;
     Server *server = data->server;
     int clientSocket1 = data->clientSocket;
@@ -28,21 +29,22 @@ void *ClientHandler::handleClient(void *clientData) {
     // start running the game inside the join-command's thread
     if (startRunningGame(command, args, manager)) {
         string roomName = args[0];
-        manager->getOpenGames()->erase(roomName);
+        manager->removeFromOpenGames(roomName);
         GameroomData *roomData = (*manager->getLobbyMap())[roomName];
         runGame(roomData, server);
     }
 }
 
 bool ClientHandler::startRunningGame(string command, vector<string> args, CommandsManager *manager) {
-    return (strcmp("join", command.c_str()) == 0 &&
-            manager->getOpenGames()->find(args[0]) != manager->getOpenGames()->end());
+    return (strcmp("join", command.c_str()) == 0 && manager->isOpenGame(args[0]));
+
 }
 
 void ClientHandler::runGame(GameroomData *roomData, Server *server) {
     int clientSocket1 = roomData->socket1;
     int clientSocket2 = roomData->socket2;
     string roomName = roomData->name;
+    CommandsManager *manager = server->getCommandsManager();
 
     // the actual sending messages from one player to the other
     bool playNext = CONTINUE;
@@ -50,7 +52,7 @@ void ClientHandler::runGame(GameroomData *roomData, Server *server) {
         playNext = playOneTurn(clientSocket1, clientSocket2, server, roomName);
         swapSockets(&clientSocket1, &clientSocket2);
     }
-    server->getCommandsManager()->getLobbyMap()->erase(roomName);
+    manager->removeFromLobby(roomName);
     close(clientSocket1);
     close(clientSocket2);
     delete roomData;

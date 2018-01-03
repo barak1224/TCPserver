@@ -26,10 +26,24 @@ public:
     map<string, GameroomData *>* getLobbyMap() { return this->lobbyMap; }
     map<string, int>* getOpenGames() { return this->openGames; }
 
+    void removeFromOpenGames(string roomName);
+
+    bool isOpenGame(string &roomName);
+
+    void addToOpenGames(string roomName, int clientSocket);
+
+    void addToLobby(string roomName, GameroomData *data);
+
+    void removeFromLobby(string roomName);
+
 private:
+    pthread_mutex_t openGamesLock;
+    pthread_mutex_t lobbyMapLock;
+
     map<string, Command *> commandsMap;
     map<string, GameroomData *> *lobbyMap;
     map<string, int> *openGames;
+
 };
 
 #endif //TCPSERVER_COMMANDMANAGER_H

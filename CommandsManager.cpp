@@ -14,10 +14,10 @@ CommandsManager::CommandsManager() {
     openGames = new map<string,int>();
     lobbyMap = new map<string, GameroomData *>();
     commandsMap["play"] = new PlayCommand();
-    commandsMap["list_games"] = new PrintCommand(openGames);
-    commandsMap["join"] = new JoinCommand(openGames, lobbyMap);
-    commandsMap["close"] = new CloseCommand(openGames, lobbyMap);
-    commandsMap["start"] = new StartCommand(openGames);
+    commandsMap["list_games"] = new PrintCommand(openGames, &openGamesLock);
+    commandsMap["join"] = new JoinCommand(openGames, lobbyMap, &openGamesLock, &lobbyMapLock);
+    commandsMap["close"] = new CloseCommand(lobbyMap, &lobbyMapLock);
+    commandsMap["start"] = new StartCommand(openGames, &openGamesLock);
 }
 void CommandsManager::executeCommand(string command, vector<string> args, int clientSocket1, int clientSocket2) {
     Command *commandObj = commandsMap[command];
@@ -37,5 +37,34 @@ CommandsManager::~CommandsManager() {
     delete lobbyMap;
 }
 
+void CommandsManager::addToOpenGames(string roomName, int clientSocket) {
+    pthread_mutex_lock(&openGamesLock);
+    (*openGames)[roomName] = clientSocket;
+    pthread_mutex_unlock(&openGamesLock);
+}
 
+void CommandsManager::removeFromOpenGames(string roomName) {
+    pthread_mutex_lock(&openGamesLock);
+    openGames->erase(roomName);
+    pthread_mutex_unlock(&openGamesLock);
+}
 
+bool CommandsManager::isOpenGame(string &roomName) {
+    bool result;
+    pthread_mutex_lock(&openGamesLock);
+    result = openGames->find(roomName) != openGames->end();
+    pthread_mutex_unlock(&openGamesLock);
+    return result;
+}
+
+void CommandsManager::removeFromLobby(string roomName) {
+    pthread_mutex_lock(&lobbyMapLock);
+    lobbyMap->erase(roomName);
+    pthread_mutex_unlock(&lobbyMapLock);
+}
+
+void CommandsManager::addToLobby(string roomName, GameroomData *data) {
+    pthread_mutex_lock(&lobbyMapLock);
+    (*lobbyMap)[roomName] = data;
+    pthread_mutex_unlock(&lobbyMapLock);
+}
